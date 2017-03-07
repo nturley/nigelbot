@@ -36,7 +36,7 @@ Another reason I did it was because I was nervous about bwapi or BWMirror creati
 ## Overlays
 I'm pretty proud of my overlay manager. The overlay manager can display lots of different information that can be toggled on and off by typing in the toggle name in the in-game chat. For instance, if you type "names", then all of the Unit names will become visible or invisible. In theory, if you are debugging a specific feature or subsystem then you can turn on relevant overlays to figure out what it's doing. Overlays should be designed so that they can all be visible simultaneously, (unit labels are all concatenated together instead of piling on top of each other)
 
-## General manager patterns
+## General Organizational Patterns
 I haven't gotten too far, but so far, a pattern that is emerging is that Bot notifies a unit manager when a unit status changes that might be of interest to a particular manager by calling "addUnit" to that manager. The manager detects whether it cares about that unit or whether it is already tracking that unit and decides whether to add it to its indices and sometimes wraps them in a single-unit manager.
 
 Every frame the manager goes through its indexed units and calls onFrame on their single-unit manager or just tells the unit what to do directly. Managers can transfer units to each other when they need them or no longer need them.
@@ -44,6 +44,16 @@ Every frame the manager goes through its indexed units and calls onFrame on thei
 At first, I suspect its going to be a pretty flat collection of entities that tell each other what to do. For instance, the Building Manager is pretty much a sibling of the mining manager, whenever it needs a worker, it asks the mining manager for one. Similarly, I expect at some point we will have a base defender class that monitors whether enemy units are wandering into our territory and might ask the mining manager for workers if it needs them to drive off an enemy invader. We might have some classes that only monitor game state and others that only order units to follow whatever directives are given to them by other entities.
 
 Ideally, once we have enough of these lower level managers, planners and monitors then we can start layering higher level reasoning on top of them that can guide the managers toward specific goals from a config file or by observations of the game state.
+
+### Observations
+One of the tricky bits about managing units are things like "my unit that was ordered to do something never actually did it, so subsystems are stuck waiting for it to complete", or "a condition triggers a unit to solve a problem and too many units all try to solve it at once". These sorts of problems seem to improve when you
+
+1. create a manager class instance that manages progress toward completing a task
+2. modify all game state planning to account for this task eventually starting and completing (the assigned units, the occupied space, the minerals, the problem solved, etc)
+3. Use the manager to detect when progress is not being made or when something unexpectedly causes a delay (unit dies, is attacked, is idle before it finishes, etc) and try to fix the problem (try again, release the old unit and get a new one), or notify the parent manager so they can deal with resolving this issue.
+4. once the task has completed, notify any interested managers and release any claimed units or resources
+
+Its difficult to predict what type of delay or obstacles can come up in accomplishing a task, until you see it happen, but in theory, the resolution is usually simply monitoring the progress very carefully and picking the correct response to resolving it. Adding some basic sanity checks to managers to notice unusual behavior can really help with this.
 
 ## Mining Manager
 Optimizing mining is super hard. The first level of optimization that I tried was locking workers to a mineral field. The next level I tried was that every time a worker returns a mineral load, they find the mineral field that they predict they can start mining the soonest and reserve it for about as long as it takes to mine a new load (~80 frames). Every frame they are actually mining they decrement the reservation period. A worker estimates about how many frames it will take to travel to the mineral field (which isn't a very accurate estimate) and takes that into account when picking its next target.
