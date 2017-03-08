@@ -1,5 +1,8 @@
 # Ideas of projects to work on
 
+## Basic cannon rush
+I think we are getting pretty close to a cannon rush bot. A cannon rush bot could easily beat the built in AI.
+
 ## gitignore
 We need to add a gitignore file to make it easier to avoid checking in binaries or that workspace.xml file or something.
 
@@ -19,10 +22,10 @@ It's probably too much to ask to set up a starcraft server to do runtime tests o
 At some point, it will become convenient to have the camera automatically track the most interesting thing on the map so its less work to watch the bot play.
 
 ## Worker harrassment
-One of the significant milestones in a BWAPI AI is beating the builtin AI. One of the easiest ways to beat the builtin AI is to send an early worker scout out to harrass their main base. The builtin AI can get distracted and you can bring their economy to a standstill. Many lower tier AI's are similarly vulnerable to simple harrassment, but very few bots seem to be doing advanced harrassment like clever cannon rush tactics or mining the backside of the mineral line.
+Many AI's get easily distracted when there is a worker running around the mineral line and you can bring their economy to a standstill.
 
 ## Defend against worker harrassment
-After implementing harrassing our opponents workers, we will have to defend against harrassment against our own. This should also include ling rushes. A 4 pool rushbot is like the Hello World of bwapi bots.
+We will have to defend against harrassment against our mineral line. This should also include ling rushes. A 4 pool rushbot is like the Hello World of bwapi bots. So adding this would immediately eliminate the threat of a significant percentage of bots in the tournament.
 
 ## BWEM
 BWTA2 has some irritating problems. I'd rather use BWEM. dgant is working on writing a JNI wrapper. We could help with that.
@@ -47,4 +50,4 @@ builders get stuck or confused all the time. The builder should detect why a bui
 
 ## Building Planner
 
-build planner is usable but needs to 
+build planner is usable but needs to add support for geysers and additional planning directives. Also spiral search doesn't make sense for all directives.
