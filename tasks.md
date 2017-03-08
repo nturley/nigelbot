@@ -1,7 +1,10 @@
 # Ideas of projects to work on
 
+## gitignore
+We need to add a gitignore file to make it easier to avoid checking in binaries or that workspace.xml file or something.
+
 ## Improve Mining Manager
-Find ways to increase worker mining speed
+Find ways to increase worker mining speed. Also find a formula to predict a hypothetical mining rate for a given set of mineral positions, number of workers, etc.
 
 ## CI
 It's probably too much to ask to set up a starcraft server to do runtime tests on our code, but we could do a simple compile test to confirm we don't break the build. I'm not certain how nicely something like travis-ci plays with intellij projects.
