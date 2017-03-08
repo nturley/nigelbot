@@ -46,7 +46,7 @@ class Miner (val unit:bwapi.Unit) {
   }
 
   def clearTarget(): Unit = {
-    target.get.miners.remove(this)
+    if (target.nonEmpty) target.get.miners.remove(this)
     target = None
   }
 

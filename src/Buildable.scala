@@ -1,11 +1,15 @@
-class Buildable (val unit:bwapi.UnitType, val tech:bwapi.TechType, val isUnit:Boolean){
-  val isTech = !isUnit
-  def this(unit:bwapi.UnitType) = this(unit, null, true)
-  def this(tech:bwapi.TechType) = this(null, tech, false)
+class Buildable (val unit:bwapi.UnitType, val isUnit:Boolean,
+                 val tech:bwapi.TechType, val isTech:Boolean,
+                 val upgrade:bwapi.UpgradeType, val isUpgrade:Boolean) {
+  def this(unit:bwapi.UnitType) = this(unit, true, null, false, null, false)
+  def this(tech:bwapi.TechType) = this(null, false, tech, true, null, false)
+  def this(upgrade:bwapi.UpgradeType) = this(null, false, null, false, upgrade, true)
 
   def mineralPrice():Int = {
     if (isUnit) {
       return unit.mineralPrice
+    } else if (isUpgrade) {
+      return upgrade.mineralPrice
     } else {
       return tech.mineralPrice
     }
@@ -14,8 +18,10 @@ class Buildable (val unit:bwapi.UnitType, val tech:bwapi.TechType, val isUnit:Bo
   def gasPrice():Int = {
     if (isUnit) {
       return unit.gasPrice
-    } else {
+    } else if (isTech) {
       return tech.gasPrice
+    } else {
+      return upgrade.gasPrice
     }
   }
 
@@ -30,8 +36,10 @@ class Buildable (val unit:bwapi.UnitType, val tech:bwapi.TechType, val isUnit:Bo
   override def toString: String = {
     if (isUnit) {
       return unit.toString
-    } else {
+    } else if (isTech) {
       return tech.toString
+    } else {
+      return upgrade.toString
     }
   }
 }

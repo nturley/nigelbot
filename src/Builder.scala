@@ -5,6 +5,7 @@
 class Builder (val builderName:String, val buildingType:bwapi.UnitType) {
 
   val target = With.buildingPlanner.getBuildTarget(buildingType)
+  With.buildingPlanner.buildPlan.dequeue()
   var isBuilding = false
 
   def onFrame(): Unit = {
