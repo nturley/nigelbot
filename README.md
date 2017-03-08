@@ -1,6 +1,6 @@
+[![Join the chat at https://gitter.im/nigelbot/Lobby](https://badges.gitter.im/nigelbot/Lobby.svg)](https://gitter.im/nigelbot/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 # nigelbot
 
-[![Join the chat at https://gitter.im/nigelbot/Lobby](https://badges.gitter.im/nigelbot/Lobby.svg)](https://gitter.im/nigelbot/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Nigelbot is a broodwar bot written in Scala using the Java BWMirror language bindings for BWAPI. Right now, I'm leaning toward making it play protoss but I haven't gotten too far yet, so in theory it shouldn't take much to change it.
 
 ## Installation
