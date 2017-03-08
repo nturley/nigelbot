@@ -35,13 +35,17 @@ class BuildingPlanner {
     var y = searchStart.getY
 
     while (true) {
+      val signX = if (dx != 0) dx/Math.abs(dx) else 0
+      val signY = if (dy != 0) dy/Math.abs(dy) else 0
       //if (isBuildable(x, x+width, y, y+height, margin)) return searchStart
       if (dx==0) {
-        y to y + dy foreach{ py =>
+        y to y + dy by signY foreach{ py =>
+          With.game.drawBoxMap(new bwapi.TilePosition(x,py).toPosition, new bwapi.TilePosition(x+width,py+height).toPosition, bwapi.Color.Green)
           if (isBuildable(x, x+width, py, py+height, margin)) return new TilePosition(x, py)
         }
       } else {
-        x to x + dx foreach { px =>
+        x to x + dx by signX foreach { px =>
+          With.game.drawBoxMap(new bwapi.TilePosition(px,y).toPosition, new bwapi.TilePosition(px+width,y+height).toPosition, bwapi.Color.Green)
           if (isBuildable(px, px+width, y, y+height, margin)) return new TilePosition(px, y)
         }
       }
@@ -51,7 +55,7 @@ class BuildingPlanner {
         dy = dx
         dx = 0
       } else {
-        dx = -dy - (dy/dy)
+        dx = -dy - signY
         dy = 0
       }
     }

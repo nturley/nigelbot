@@ -30,9 +30,10 @@ At some point we are going to need to do threat analysis. That could mean findin
 # Recently completed
 
 * Gitter chat room is up!
+* Spiral search looks correct
 
 # In Work
 
 ## Building Planner
 
-We have some simple spiral search that doesn't fail catastrophically, but I'm not convinced it actually is searching in a spiral.
+Build planner probably needs some finishing up, notably supporting other locations besides middle of main
