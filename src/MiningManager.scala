@@ -1,3 +1,5 @@
+import Managers.{Manager, UnitManager}
+
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 /**
@@ -5,7 +7,7 @@ import scala.collection.JavaConverters._
   * locks new miners to a "best mineral"
   * removes miners from "worst mineral"
   */
-class MiningManager {
+class MiningManager extends UnitManager {
   private val approxMinerSpeed = 3.0f
   private val managedNames = mutable.HashSet.empty[String]
   val mineralsInRegion = mutable.HashMap.empty[String, mutable.HashSet[Mineral]]
@@ -23,6 +25,7 @@ class MiningManager {
   val depots = mutable.HashSet.empty[bwapi.Unit]
   val minersByName = mutable.HashMap.empty[String, Miner]
 
+  override
   def addUnit(name: String, unit:bwapi.Unit, uType:bwapi.UnitType): Unit = {
     if (managedNames.contains(name)) return
     managedNames.add(name)
@@ -40,6 +43,7 @@ class MiningManager {
     }
   }
 
+  override
   def onFrame(): Unit ={
     gatherWindowFrame += 1
     if (gatherWindowFrame == windowSize) {
@@ -60,6 +64,7 @@ class MiningManager {
     return name
   }
 
+  override
   def removeUnit(name: String, unit:bwapi.Unit, uType:bwapi.UnitType): Unit = {
     if (uType.isWorker) {
       minersByName.remove(name)

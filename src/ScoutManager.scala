@@ -1,9 +1,11 @@
+import Managers.Manager
+
 import scala.collection.mutable
 import scala.collection.JavaConverters._
 /**
   * Created by Neil on 2/27/2017.
   */
-class ScoutManager {
+class ScoutManager extends Manager {
   private val startReg =bwta.BWTA.getRegion(With.self.getStartLocation)
   val myMainRegion:String = With.names.getNameFor(startReg)
   val regs = startReg.getChokepoints.get(0).getRegions
@@ -24,6 +26,7 @@ class ScoutManager {
     regionStatus(regName) = Unexplored
   }
 
+  override
   def onFrame(): Unit = {
     for ((regname, status) <- regionStatus) {
       if (status == Unexplored) {

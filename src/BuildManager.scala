@@ -1,10 +1,11 @@
+import Managers.{Manager, UnitManager}
 import bwapi.{UnitType, UpgradeType}
 
 import scala.collection.JavaConverters._
 /**
   * Created by Neil on 3/5/2017.
   */
-class BuildManager {
+class BuildManager extends UnitManager {
 
   val builders = scala.collection.mutable.HashSet.empty[Builder]
 
@@ -42,6 +43,7 @@ class BuildManager {
     With.miningManager.addUnit(name,unit, unit.getType)
   }
 
+  override
   def onFrame(): Unit = {
     builders.foreach(b => b.onFrame)
 
@@ -104,4 +106,9 @@ class BuildManager {
     return ret
   }
 
+  // TODO
+  override def addUnit(name: String, unit: bwapi.Unit, uType:bwapi.UnitType) = ???
+
+  // TODO releaseBuilder is kinda this function
+  override def removeUnit(name: String, unit: bwapi.Unit, uType:bwapi.UnitType) = ???
 }
