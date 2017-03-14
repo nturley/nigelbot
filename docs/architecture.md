@@ -47,12 +47,15 @@ This model looks similar what PurpleWave was sorta doing with it's hiearchical p
 
 In theory we could break down all decision-making into this sort of request framework.
 
-I need zealots -> 
-I need minerals to build zealots -> 
-I need miners to get minerals ->
-I need to build more miners
+* I need zealots -> 
+* I need minerals to build zealots -> 
+* I need miners to get minerals ->
+* I need to build more miners
 
 That way, the different build orders and strategies would hinge on the little variables that tweak the different priorities.
 
 If you want a worker rushbot, then some military manager needs to request any unit ASAP with the highest priority. If you want a 4pool, then you lower the request priority to be below the miners so you immediately send all lings.
 
+Ive been thinking about build order solving and I think its easiest to solve greedily. Instead of solving how many miners are optimal, you can compare how long its expected to take to reach your next goal without building any more miners and how long it will take if you build one miner first. For large mineral requests, adding more miners should speed it up until you hit a point when it starts to slow it down.
+
+Finding the right number of gas miners can probably be done in a similar way. If it improves how fast we reach a goal we transfer a miner to gas.
