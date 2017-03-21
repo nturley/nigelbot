@@ -92,7 +92,8 @@ object Overlays {
       for (builder <- With.buildManager.builders) {
         With.game.drawLineMap(builder.target, With.names.getUnit(builder.builderName).getPosition, bwapi.Color.Blue)
       }
-      With.buildingPlanner.getBuildTarget(UnitType.Protoss_Pylon)
+      // TODO does nothing?
+      //With.buildingPlanner.getBuildTarget(UnitType.Protoss_Pylon)
     }
     if (Config.toggles("frame")) {
       With.game.drawBoxScreen(360, 0, 420, 20, bwapi.Color.Black, true)

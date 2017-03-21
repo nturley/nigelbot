@@ -111,4 +111,6 @@ class BuildManager extends UnitManager {
 
   // TODO releaseBuilder is kinda this function
   override def removeUnit(name: String, unit: bwapi.Unit, uType:bwapi.UnitType) = ???
+
+  override def nominateEmployeeForTransfer(requestedType: UnitType): String = ???
 }

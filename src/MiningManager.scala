@@ -1,4 +1,5 @@
 import Managers.{Manager, UnitManager}
+import bwapi.UnitType
 
 import scala.collection.mutable
 import scala.collection.JavaConverters._
@@ -100,5 +101,13 @@ class MiningManager extends UnitManager {
       }
     }
     return bestMineral
+  }
+
+    override
+    def nominateEmployeeForTransfer(requestedType: UnitType): String = {
+        if (requestedType.isWorker)
+            return minersByName.head._1
+      // TODO
+        return ""
   }
 }

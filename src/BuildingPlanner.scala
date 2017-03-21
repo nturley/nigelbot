@@ -30,12 +30,12 @@ class BuildingPlanner {
       (reg.getCenter.toTilePosition, reg)
     } else if (dir == BuildDirection.MAIN_BACK) {
       val reg = With.names.getRegion(With.scoutManager.myMainRegion)
-      assert(reg.getChokepoints.size() == 1)
+      //assert(reg.getChokepoints.size() == 1)
       val chokeCenter = reg.getChokepoints.get(0).getCenter
       (furthestTileFrom(reg, chokeCenter), reg)
     } else if (dir == BuildDirection.MAIN_FRONT) {
       val reg = With.names.getRegion(With.scoutManager.myMainRegion)
-      assert(reg.getChokepoints.size() == 1)
+      //assert(reg.getChokepoints.size() == 1)
       val chokeCenter = reg.getChokepoints.get(0).getCenter
       (chokeCenter.toTilePosition, reg)
     } else {

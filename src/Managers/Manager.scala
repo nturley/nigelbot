@@ -17,4 +17,6 @@ trait UnitManager extends Manager {
   // Unit managers have some units they are in control of
   def addUnit(name: String, unit:bwapi.Unit, uType:bwapi.UnitType)
   def removeUnit(name: String, unit:bwapi.Unit, uType:bwapi.UnitType)
+  // TODO better name
+  def nominateEmployeeForTransfer(requestedType:bwapi.UnitType): String
 }
