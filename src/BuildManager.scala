@@ -21,6 +21,7 @@ class BuildManager {
   buildQueue.enqueue(pylon)
   buildQueue.enqueue(probe)
   buildQueue.enqueue(forge)
+  buildQueue.enqueue(new Buildable(UnitType.Protoss_Assimilator))
 
   buildQueue.enqueue(pylon)
   1 to 2 foreach { _ =>
@@ -73,7 +74,7 @@ class BuildManager {
             u.canUpgrade(potentialBuild.upgrade) && !u.isUpgrading
           )
           if (availableUnit.nonEmpty) {
-            availableUnit.get.upgrade(potentialBuild.upgrade)
+            availableUnit.get.upgrade(buildQueue.dequeue.upgrade)
             return
           }
         } else {

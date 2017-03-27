@@ -30,8 +30,9 @@ object Overlays {
     for (unit:bwapi.Unit <- With.game.getAllUnits.asScala) {
       if (With.names.hasName(unit) && unit.exists && unit.isCompleted) {
         var label = ""
-        if (Config.toggles("names")) label += With.names.getNameFor(unit)
-        if (Config.toggles("orders") && unit.getPlayer.getID == With.game.self().getID) label += "\n" + unit.getOrder.toString
+        if (Config.toggles("names")) label += With.names.getNameFor(unit) + "\n"
+        if (Config.toggles("coords")) label += unit.getPosition.toString + "\n"
+        if (Config.toggles("orders") && unit.getPlayer.getID == With.game.self().getID) label +=  unit.getOrder.toString + "\n"
         With.game.drawTextMap(unit.getLeft, unit.getBottom, label)
       }
     }
@@ -90,9 +91,12 @@ object Overlays {
       With.game.drawBoxScreen(210, 0, 280, 20, bwapi.Color.White)
       With.game.drawTextScreen(215, 5, "resMin: " + With.costManager.reservedMinerals)
       for (builder <- With.buildManager.builders) {
-        With.game.drawLineMap(builder.target, With.names.getUnit(builder.builderName).getPosition, bwapi.Color.Blue)
+        val pos = With.names.getUnit(builder.builderName).getPosition
+        With.game.drawLineMap(builder.target, pos, bwapi.Color.Blue)
+        With.game.drawTextMap((builder.target.getX + pos.getX)/2,(builder.target.getY + pos.getY)/2, pos.getDistance(builder.target).toString)
       }
-      With.buildingPlanner.getBuildTarget(UnitType.Protoss_Pylon)
+      if (With.buildManager.buildQueue.head.isUnit)
+        With.buildingPlanner.getBuildTarget(With.buildManager.buildQueue.head.unit)
     }
     if (Config.toggles("frame")) {
       With.game.drawBoxScreen(360, 0, 420, 20, bwapi.Color.Black, true)

@@ -1,5 +1,6 @@
 import bwapi.{Color, TilePosition, UnitType}
 import BuildDirection.BuildDirection
+import scala.collection.JavaConverters._
 import sun.reflect.generics.reflectiveObjects.NotImplementedException
 /**
   * Created by Neil on 3/5/2017.
@@ -22,6 +23,18 @@ class BuildingPlanner {
   def getBuildTarget(building:UnitType): bwapi.Position = {
     val height = building.tileHeight()
     val width = building.tileWidth()
+
+    if (building.isRefinery) {
+      With.game.getNeutralUnits.asScala.foreach { (u: bwapi.Unit) =>
+        if (u.getType == UnitType.Resource_Vespene_Geyser) {
+          val reg  = With.names.getNameFor(bwta.BWTA.getRegion(u.getPosition))
+          if (reg == With.scoutManager.myMainRegion) {
+            return new bwapi.Position(u.getLeft, u.getTop)
+          }
+        }
+      }
+    }
+
     val buildDirective = buildPlan.head
     val dir = buildDirective.dir
     val margin = buildDirective.margin
