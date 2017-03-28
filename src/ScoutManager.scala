@@ -4,6 +4,7 @@ import scala.collection.JavaConverters._
   * Created by Neil on 2/27/2017.
   */
 class ScoutManager {
+  GameEvents.onFrame.subscribe(onFrame)
   private val startReg =bwta.BWTA.getRegion(With.self.getStartLocation)
   val myMainRegion:String = With.names.getNameFor(startReg)
   val regs = startReg.getChokepoints.get(0).getRegions
@@ -24,7 +25,7 @@ class ScoutManager {
     regionStatus(regName) = Unexplored
   }
 
-  def onFrame(): Unit = {
+  def onFrame(n:Null): Unit = {
     for ((regname, status) <- regionStatus) {
       if (status == Unexplored) {
         val reg = With.names.getRegion(regname)

@@ -5,22 +5,9 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException
 /**
   * Created by Neil on 3/5/2017.
   */
-class BuildingPlanner {
+class BuildingPlacer {
 
-  val buildPlan = scala.collection.mutable.Queue.empty[BuildPosition]
-  1 to 2 foreach { _ =>
-    buildPlan.enqueue(new BuildPosition(BuildDirection.MAIN_BACK, 0))
-  }
-  1 to 8 foreach { _ =>
-    buildPlan.enqueue(new BuildPosition(BuildDirection.MAIN_FRONT, 0))
-  }
-  1 to 10 foreach { _ =>
-    buildPlan.enqueue(new BuildPosition(BuildDirection.MAIN_BACK, 0))
-  }
-
-
-
-  def getBuildTarget(building:UnitType): bwapi.Position = {
+  def getBuildTarget(building:UnitType, buildDirective:BuildPosition): bwapi.Position = {
     val height = building.tileHeight()
     val width = building.tileWidth()
 
@@ -35,7 +22,6 @@ class BuildingPlanner {
       }
     }
 
-    val buildDirective = buildPlan.head
     val dir = buildDirective.dir
     val margin = buildDirective.margin
     val (searchStart, reg) = if (dir == BuildDirection.MAIN_MIDDLE) {
@@ -54,7 +40,7 @@ class BuildingPlanner {
     } else {
         throw new NotImplementedException
     }
-    val buildLoc = spiralSearch(searchStart, width, height, margin, reg)
+    val buildLoc = spiralSearch(searchStart, width, height, margin, reg, building)
     With.game.drawBoxMap(buildLoc.toPosition, new bwapi.TilePosition(buildLoc.getX+width, buildLoc.getY+height).toPosition, bwapi.Color.Green)
     With.game.drawBoxMap(new bwapi.TilePosition(buildLoc.getX-margin,buildLoc.getY-margin).toPosition, new bwapi.TilePosition(buildLoc.getX+width+margin, buildLoc.getY+height+margin).toPosition, bwapi.Color.Orange)
     return buildLoc.toPosition
@@ -88,7 +74,7 @@ class BuildingPlanner {
     throw new UnknownError("This shouldn't happen")
   }
 
-  def spiralSearch(searchStart:TilePosition, width:Int, height:Int, margin:Int, reg:bwta.Region):TilePosition = {
+  def spiralSearch(searchStart:TilePosition, width:Int, height:Int, margin:Int, reg:bwta.Region, building:bwapi.UnitType):TilePosition = {
     var dx = 1
     var dy = 0
     var x = searchStart.getX
@@ -104,14 +90,19 @@ class BuildingPlanner {
           val topleft = new bwapi.TilePosition(x,py)
           val bottomRight = new bwapi.TilePosition(x+width, py + height)
           With.game.drawBoxMap(topleft.toPosition, bottomRight.toPosition, bwapi.Color.Green)
-          if (poly.isInside(topleft.toPosition) && isBuildable(x, x+width, py, py+height, margin)) return topleft
+          if (
+            poly.isInside(topleft.toPosition) &&
+            isBuildable(x, x+width, py, py+height, margin)
+          ) return topleft
         }
       } else {
         x to x + dx by signX foreach { px =>
           val topleft = new bwapi.TilePosition(px,y)
           val bottomRight = new bwapi.TilePosition(px+width, y + height)
           With.game.drawBoxMap(new bwapi.TilePosition(px,y).toPosition, new bwapi.TilePosition(px+width,y+height).toPosition, bwapi.Color.Green)
-          if (poly.isInside(topleft.toPosition) && isBuildable(px, px+width, y, y+height, margin)) return new TilePosition(px, y)
+          if (poly.isInside(topleft.toPosition) &&
+            isBuildable(px, px+width, y, y+height, margin)
+            ) return new TilePosition(px, y)
         }
       }
       x+=dx

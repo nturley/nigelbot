@@ -38,15 +38,8 @@ Another reason I did it was because I was nervous about bwapi or BWMirror creati
 I'm pretty proud of my overlay manager. The overlay manager can display lots of different information that can be toggled on and off by typing in the toggle name in the in-game chat. For instance, if you type "names", then all of the Unit names will become visible or invisible. In theory, if you are debugging a specific feature or subsystem then you can turn on relevant overlays to figure out what it's doing. Overlays should be designed so that they can all be visible simultaneously, (unit labels are all concatenated together instead of piling on top of each other)
 
 ## General Organizational Patterns
-In general, I have been finding that its easier to tackle problems by creating small utility classes that convert higher level directives into lower level decision making and management.
-
-I haven't gotten too far, but so far, a pattern that is emerging is that Bot notifies a unit manager when a unit status changes that might be of interest to a particular manager by calling "addUnit" to that manager. The manager detects whether it cares about that unit or whether it is already tracking that unit and decides whether to add it to its indices and sometimes wraps them in a single-unit manager.
-
-Every frame the manager goes through its indexed units and calls onFrame on their single-unit manager or just tells the unit what to do directly. Managers can transfer units to each other when they need them or no longer need them.
-
-At first, I suspect its going to be a pretty flat collection of entities that tell each other what to do. For instance, the Building Manager is pretty much a sibling of the mining manager, whenever it needs a worker, it asks the mining manager for one. Similarly, I expect at some point we will have a base defender class that monitors whether enemy units are wandering into our territory and might ask the mining manager for workers if it needs them to drive off an enemy invader. We might have some classes that only monitor game state and others that only order units to follow whatever directives are given to them by other entities.
-
-Ideally, once we have enough of these lower level managers, planners and monitors then we can start layering higher level reasoning on top of them that can guide the managers toward specific goals from a config file or by observations of the game state.
+I haven't gotten too far, but the pattern that seems to be emerging is that there are unit managers that subscribe to
+game events to keep track of the units they have been assigned.
 
 ### Observations
 One of the tricky bits about managing units are things like "my unit that was ordered to do something never actually did it, so subsystems are stuck waiting for it to complete", or "a condition triggers a unit to solve a problem and too many units all try to solve it at once". These sorts of problems seem to improve when you

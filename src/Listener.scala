@@ -1,51 +1,65 @@
 import bwapi.{BWEventListener, Player}
 
 /**
-  * Filters out some of the listener noise before passing it to Bot
+  * Filters out some of the listener noise before passing it to GameEvents
   */
 object Listener extends BWEventListener{
   val mirror:bwapi.Mirror = new bwapi.Mirror()
-  var bot:Option[Bot] = None
+  var initializer = new Initializer()
 
   def initialize(): Unit = {
     mirror.getModule.setEventListener(this)
-    mirror.startGame
+    mirror.startGame()
   }
 
+  // game start/finish
   override def onStart(): Unit = {
     try {
-      bot = Some(new Bot())
-      With.game = mirror.getGame
-      bot.get.onStart
+      GameEvents.onStart.fire(mirror.getGame)
     } catch {
-      case e: Exception => {
-        e.printStackTrace
-      }
+      case e: Exception => e.printStackTrace()
+    }
+  }
+  override def onEnd(b: Boolean): Unit = { GameEvents.onEnd.fire(b) }
+
+  override def onFrame(): Unit = {
+    try {
+      GameEvents.onFrame.fire(null)
+    } catch {
+      case e: Exception => e.printStackTrace()
     }
   }
 
-  override def onEnd(b: Boolean):                         Unit = { bot.get.onEnd(b) }
-  override def onFrame():                                 Unit = {
-    try {bot.get.onFrame
-    } catch {
-      case e: Exception => {
-        e.printStackTrace
-      }
-    }
-  }
-  override def onSendText(s: String):                     Unit = { bot.get.onSendText(s) }
-  override def onReceiveText(player: Player, s: String):  Unit = { bot.get.onReceiveText(player, s) }
-  override def onPlayerLeft(player: Player):              Unit = { bot.get.onPlayerLeft(player) }
-  override def onPlayerDropped(player: Player):           Unit = { bot.get.onPlayerDropped(player) }
-  override def onNukeDetect(position: bwapi.Position):    Unit = { bot.get.onNukeDetect(position) }
-  override def onUnitComplete(unit: bwapi.Unit):          Unit = { bot.get.onUnitComplete(unit) }
-  override def onUnitCreate(unit: bwapi.Unit):            Unit = { bot.get.onUnitCreate(unit) }
-  override def onUnitDestroy(unit: bwapi.Unit):           Unit = { bot.get.onUnitDestroy(unit) }
-  override def onUnitDiscover(unit: bwapi.Unit):          Unit = { bot.get.onUnitDiscover(unit) }
-  override def onUnitEvade(unit: bwapi.Unit):             Unit = { bot.get.onUnitEvade(unit) }
-  override def onUnitHide(unit: bwapi.Unit):              Unit = { bot.get.onUnitHide(unit) }
-  override def onUnitMorph(unit: bwapi.Unit):             Unit = { bot.get.onUnitMorph(unit) }
-  override def onUnitRenegade(unit: bwapi.Unit):          Unit = { bot.get.onUnitRenegade(unit) }
-  override def onUnitShow(unit: bwapi.Unit):              Unit = { bot.get.onUnitShow(unit) }
-  override def onSaveGame(s: String):                     Unit = { bot.get.onSaveGame(s) }
+
+
+  // in game chat
+  override def onSendText(s: String):                     Unit = { GameEvents.onSendText.fire(s) }
+  override def onReceiveText(player: Player, s: String):  Unit = { GameEvents.onReceiveText.fire(player, s) }
+
+  // network issues
+  override def onPlayerLeft(player: Player):              Unit = { GameEvents.onPlayerLeft.fire(player) }
+  override def onPlayerDropped(player: Player):           Unit = { GameEvents.onPlayerDropped.fire(player) }
+
+  // nuke notification
+  override def onNukeDetect(position: bwapi.Position):    Unit = { GameEvents.onNukeDetect.fire(position) }
+
+  // units being created destroyed
+  override def onUnitCreate(unit: bwapi.Unit):            Unit = { GameEvents.onUnitCreate.fire(unit) }
+  override def onUnitDestroy(unit: bwapi.Unit):           Unit = { GameEvents.onUnitDestroy.fire(unit) }
+
+  // unit state changes
+  override def onUnitComplete(unit: bwapi.Unit):          Unit = { GameEvents.onUnitComplete.fire(unit) }
+  override def onUnitMorph(unit: bwapi.Unit):             Unit = { GameEvents.onUnitMorph.fire(unit) }
+  override def onUnitRenegade(unit: bwapi.Unit):          Unit = { GameEvents.onUnitRenegade.fire(unit) }
+
+  // moving into and out of fog of war
+  override def onUnitDiscover(unit: bwapi.Unit):          Unit = { GameEvents.onUnitDiscover.fire(unit) }
+  override def onUnitEvade(unit: bwapi.Unit):             Unit = { GameEvents.onUnitEvade.fire(unit) }
+
+  // invisible units
+  override def onUnitHide(unit: bwapi.Unit):              Unit = { GameEvents.onUnitHide.fire(unit) }
+  override def onUnitShow(unit: bwapi.Unit):              Unit = { GameEvents.onUnitShow.fire(unit) }
+
+  override def onSaveGame(s: String):Unit = {}
+
 }

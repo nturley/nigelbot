@@ -2,10 +2,9 @@
 /**
   * Created by Neil on 3/5/2017.
   */
-class Builder (val builderName:String, val buildingType:bwapi.UnitType) {
+class Builder (val builderName:String, val buildingType:bwapi.UnitType, val buildPosition: BuildPosition) {
 
-  val target = With.buildingPlanner.getBuildTarget(buildingType)
-  With.buildingPlanner.buildPlan.dequeue()
+  var target = With.buildingPlanner.getBuildTarget(buildingType, buildPosition)
   var isBuilding = false
   private var buildWait = 0
 
@@ -16,9 +15,13 @@ class Builder (val builderName:String, val buildingType:bwapi.UnitType) {
         unit.move(target)
       }
       if (unit.getDistance(target) < 150) {
-        unit.build(buildingType, target.toTilePosition)
-        isBuilding = true
-        buildWait = 0
+        if (unit.canBuild(buildingType, target.toTilePosition)) {
+          unit.build(buildingType, target.toTilePosition)
+          isBuilding = true
+          buildWait = 0
+        } else {
+          target = With.buildingPlanner.getBuildTarget(buildingType, buildPosition)
+        }
       }
     } else {
       // for protoss this happens for like one frame

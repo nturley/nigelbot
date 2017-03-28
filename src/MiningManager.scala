@@ -6,7 +6,19 @@ import scala.collection.JavaConverters._
   * removes miners from "worst mineral"
   */
 class MiningManager {
-  private val approxMinerSpeed = 3.0f
+
+  GameEvents.onFrame.subscribe(onFrame)
+  GameEvents.onUnitStatusChanged.subscribe((addUnit _).tupled, (careAboutUnit _).tupled)
+  def careAboutUnit(name:String, u:bwapi.Unit, uType:bwapi.UnitType): Boolean = {
+    if (managedNames.contains(name)) return false
+    if (uType.isMineralField) return true
+    if (!u.isCompleted) return false
+    if (u.getPlayer.getID != With.self.getID) return false
+    if (u.getType.isWorker || u.getType.isResourceDepot) return true
+    false
+  }
+
+  private val approxMinerSpeed = 10.0f
   private val managedNames = mutable.HashSet.empty[String]
   val mineralsInRegion = mutable.HashMap.empty[String, mutable.HashSet[Mineral]]
 
@@ -23,8 +35,7 @@ class MiningManager {
   val depots = mutable.HashSet.empty[bwapi.Unit]
   val minersByName = mutable.HashMap.empty[String, Miner]
 
-  def addUnit(name: String, unit:bwapi.Unit, uType:bwapi.UnitType): Unit = {
-    if (managedNames.contains(name)) return
+  def addUnit(name:String, unit:bwapi.Unit, uType:bwapi.UnitType): Unit = {
     managedNames.add(name)
     if (uType.isWorker) {
       minersByName += (name -> new Miner(unit))
@@ -40,7 +51,7 @@ class MiningManager {
     }
   }
 
-  def onFrame(): Unit ={
+  def onFrame(n:Null): Unit ={
     gatherWindowFrame += 1
     if (gatherWindowFrame == windowSize) {
       gatherRate = With.self.gatheredMinerals() - gatheredLastWindow

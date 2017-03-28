@@ -1,8 +1,7 @@
 import scala.collection.mutable.HashMap
-/**
-  * Created by Neil on 2/26/2017.
-  */
+
 object Config {
+  GameEvents.onSendText.subscribe(checkCommand)
   val toggles = HashMap.empty[String, Boolean]
   toggles+=("regions" -> true)
   toggles+=("toggles" -> true)

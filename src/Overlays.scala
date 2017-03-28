@@ -5,7 +5,8 @@ import scala.collection.JavaConverters._
 
 object Overlays {
   var frameNum = 0
-  def onFrame(): Unit = {
+
+  def onFrame(n:Null): Unit = {
     With.game.setTextSize(Text.Size.Enum.Small)
 
     BWTA.getRegions.asScala.foreach(region => {
@@ -16,7 +17,7 @@ object Overlays {
           label += regname
       }
       if (Config.toggles("scout")) {
-        label += "\n(" + With.scoutManager.regionStatus(regname).toString() + ")"
+        label += "\n(" + With.scoutManager.regionStatus(regname).toString + ")"
       }
       if (Config.toggles("coords")) {
         label += "\n(" + region.getCenter.toString + ")"
@@ -95,8 +96,10 @@ object Overlays {
         With.game.drawLineMap(builder.target, pos, bwapi.Color.Blue)
         With.game.drawTextMap((builder.target.getX + pos.getX)/2,(builder.target.getY + pos.getY)/2, pos.getDistance(builder.target).toString)
       }
+      /*
       if (With.buildManager.buildQueue.head.isUnit)
         With.buildingPlanner.getBuildTarget(With.buildManager.buildQueue.head.unit)
+        */
     }
     if (Config.toggles("frame")) {
       With.game.drawBoxScreen(360, 0, 420, 20, bwapi.Color.Black, true)
