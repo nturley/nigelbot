@@ -2,7 +2,6 @@
 
 class CannonRush {
   var workerScout:WorkerScout = new WorkerScout
-  var standbyWorker:ForwardStandbyWorker = new ForwardStandbyWorker
 
   With.mapInfo.onDiscoverEnemyBuilding.subscribe(
     invoke = building => {
