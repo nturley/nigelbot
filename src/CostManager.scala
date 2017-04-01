@@ -31,9 +31,9 @@ class CostManager {
   }
 
   def unreserve(u:bwapi.UnitType): Unit = {
-    reservedMinerals -= u.mineralPrice()
-    reservedGas -= u.gasPrice()
-    reservedSupply -= u.supplyRequired()
+    if (reservedMinerals > u.mineralPrice()) reservedMinerals -= u.mineralPrice()
+    if (reservedGas > u.gasPrice()) reservedGas -= u.gasPrice()
+    if (reservedSupply> u.supplyRequired()) reservedSupply -= u.supplyRequired()
   }
 
 

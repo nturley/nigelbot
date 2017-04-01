@@ -1,7 +1,12 @@
-class GaserManager {
+import bwapi.UnitType
+
+class GasserManager {
   val managedNames = new scala.collection.mutable.HashSet[String]()
   val gasers = new scala.collection.mutable.HashSet[String]()
-  GameEvents.onUnitStatusChanged.subscribe((addUnit _).tupled, (careAboutUnit _).tupled)
+  val refineries = new scala.collection.mutable.HashSet[String]()
+
+  GameEvents.onUnitStatusChanged.subscribe("GasManager", invoke=(addUnit _).tupled, condition=(careAboutUnit _).tupled)
+
   def careAboutUnit(name:String, u:bwapi.Unit, uType:bwapi.UnitType): Boolean = {
     if (managedNames.contains(name)) return false
     if (!u.isCompleted) return false
@@ -11,10 +16,13 @@ class GaserManager {
 
   def addUnit(name:String, u:bwapi.Unit, uType:bwapi.UnitType): Unit = {
     managedNames.add(name)
-    for (_ <- 1 to 3) {
-      val gasser = With.miningManager.reassignMiner()
-      gasers += gasser
-      With.names.getUnit(gasser).rightClick(u)
+    if (uType.isRefinery) {
+      refineries.add(name)
+      for (_ <- 1 to 3) {
+        val gasser = With.miningManager.reassignMiner(u.getPosition)
+        gasers += gasser
+        With.names.getUnit(gasser).rightClick(u)
+      }
     }
   }
 

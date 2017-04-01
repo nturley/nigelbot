@@ -1,12 +1,16 @@
-/**
-  * Created by Neil on 2/27/2017.
-  */
+
+
 class Miner (val unit:bwapi.Unit) {
+
+  //GameEvents.onFrame.unsubscribe(With.names.getNameFor(unit) +" the Miner")
+  GameEvents.onFrame.subscribe(invoke=minerOnFrame, label= With.names.getNameFor(unit) +" the Miner", priority = 1)
+
   val approxFramesToExtract = 80
   var target:Option[Mineral] = None
   var framesMining:Int = 0
-  var lastFrameOrder:bwapi.Order = null
-  def onFrame(): Unit ={
+  var lastFrameOrder:bwapi.Order = _
+
+  def minerOnFrame(n:Null): Unit ={
     val myOrder = unit.getOrder
     if (lastFrameOrder == null) lastFrameOrder = myOrder
     if (target.isEmpty) {
@@ -50,11 +54,18 @@ class Miner (val unit:bwapi.Unit) {
     target = None
   }
 
+  def stopMining(): Unit = {
+    clearTarget()
+    GameEvents.onFrame.unsubscribe(With.names.getNameFor(unit) +" the Miner")
+  }
+
   def assignNextTarget(): Unit = {
     val best = With.miningManager.findBestMineral(unit.getPosition)
-    target = Some(best)
-    best.miners.add(this)
-    best.reservedFor += approxFramesToExtract
+    if (best != null) {
+      target = Some(best)
+      best.miners.add(this)
+      best.reservedFor += approxFramesToExtract
+    }
   }
 
 }

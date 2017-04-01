@@ -7,8 +7,9 @@ import scala.collection.JavaConverters._
   */
 class MiningManager {
 
-  GameEvents.onFrame.subscribe(onFrame)
-  GameEvents.onUnitStatusChanged.subscribe((addUnit _).tupled, (careAboutUnit _).tupled)
+  GameEvents.onFrame.subscribe(invoke=onFrame, label="MiningManager")
+  GameEvents.onUnitStatusChanged.subscribe("MiningManager", invoke=(addUnit _).tupled, condition=(careAboutUnit _).tupled)
+
   def careAboutUnit(name:String, u:bwapi.Unit, uType:bwapi.UnitType): Boolean = {
     if (managedNames.contains(name)) return false
     if (uType.isMineralField) return true
@@ -36,6 +37,10 @@ class MiningManager {
   val minersByName = mutable.HashMap.empty[String, Miner]
 
   def addUnit(name:String, unit:bwapi.Unit, uType:bwapi.UnitType): Unit = {
+    if (name==null) {
+      println("Name is null!")
+      throw new IllegalArgumentException("name is null")
+    }
     managedNames.add(name)
     if (uType.isWorker) {
       minersByName += (name -> new Miner(unit))
@@ -58,17 +63,22 @@ class MiningManager {
       gatheredLastWindow = With.self.gatheredMinerals()
       gatherWindowFrame = 0
     }
-    for ((_, miner) <- minersByName) {
-      miner.onFrame()
-    }
   }
 
-  def reassignMiner(): String = {
-    val (name, miner) = minersByName.head
-    minersByName.remove(name)
-    managedNames.remove(name)
-    miner.clearTarget()
-    return name
+  def reassignMiner(near:bwapi.Position): String = {
+    var nearest = Int.MaxValue
+    var nearestMiner:(String, Miner) = null
+    for ((name, miner) <- minersByName) {
+      val d = miner.unit.getPosition.getApproxDistance(near)
+      if (d < nearest) {
+        nearest = d
+        nearestMiner = (name, miner)
+      }
+    }
+    minersByName.remove(nearestMiner._1)
+    managedNames.remove(nearestMiner._1)
+    nearestMiner._2.stopMining()
+    nearestMiner._1
   }
 
   def removeUnit(name: String, unit:bwapi.Unit, uType:bwapi.UnitType): Unit = {
@@ -105,6 +115,6 @@ class MiningManager {
         soonest = available
       }
     }
-    return bestMineral
+    bestMineral
   }
 }

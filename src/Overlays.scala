@@ -17,7 +17,7 @@ object Overlays {
           label += regname
       }
       if (Config.toggles("scout")) {
-        label += "\n(" + With.scoutManager.regionStatus(regname).toString + ")"
+        label += "\n(" + With.mapInfo.regionStatus(regname).toString + ")"
       }
       if (Config.toggles("coords")) {
         label += "\n(" + region.getCenter.toString + ")"
@@ -79,9 +79,16 @@ object Overlays {
       With.game.drawBoxScreen(0, 0, 70, 145, bwapi.Color.White)
       With.game.drawTextScreen(5, 5, Config.getCommands())
     }
+
+    if (Config.toggles("onframe")) {
+      With.game.drawBoxScreen(0, 145, 90, 300, bwapi.Color.Black, true)
+      With.game.drawBoxScreen(0, 145, 90, 300, bwapi.Color.White)
+      With.game.drawTextScreen(5, 150, With.mapInfo.onDiscoverEnemyBuilding.toString)
+    }
+
     if (Config.toggles("buildQ")) {
-      With.game.drawBoxScreen(70, 0, 140, 75, bwapi.Color.Black, true)
-      With.game.drawBoxScreen(70, 0, 140, 75, bwapi.Color.White)
+      With.game.drawBoxScreen(70, 0, 150, 75, bwapi.Color.Black, true)
+      With.game.drawBoxScreen(70, 0, 150, 75, bwapi.Color.White)
       With.game.drawTextScreen(75, 5, With.buildManager.buildQueueString)
     }
     if (Config.toggles("building")) {

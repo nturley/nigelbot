@@ -1,7 +1,7 @@
 
 object GameEvents {
   val onStart = new Event[bwapi.Game]()
-  lazy val onFrame = new Event[Null]()
+  val onFrame = new Event[Null]()
   val onUnitComplete = new Event[bwapi.Unit]()
   val onUnitCreate = new Event[bwapi.Unit]()
   val onUnitDiscover = new Event[bwapi.Unit]()
@@ -20,10 +20,10 @@ object GameEvents {
   val onUnitStatusChanged = new Event[(String, bwapi.Unit, bwapi.UnitType)]()
 
   def unitStatusChange(u:bwapi.Unit): Unit = onUnitStatusChanged.fire(With.names.getNameFor(u), u, u.getType)
-  onUnitCreate.subscribe(unitStatusChange, priority = Int.MinValue)
-  onUnitComplete.subscribe(unitStatusChange, priority = Int.MinValue)
-  onUnitDiscover.subscribe(unitStatusChange, priority = Int.MinValue)
-  onUnitMorph.subscribe(unitStatusChange, priority = Int.MinValue)
-  onUnitShow.subscribe(unitStatusChange, priority = Int.MinValue)
+  onUnitCreate.subscribe("StatusChanged", invoke=unitStatusChange, priority = -100)
+  onUnitComplete.subscribe("StatusChanged", invoke=unitStatusChange, priority = -100)
+  onUnitDiscover.subscribe("StatusChanged", invoke=unitStatusChange, priority = -100)
+  onUnitMorph.subscribe("StatusChanged", invoke=unitStatusChange, priority = -100)
+  onUnitShow.subscribe("StatusChanged", invoke=unitStatusChange, priority = -100)
 
 }

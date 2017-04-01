@@ -25,7 +25,11 @@ class Names {
   }
 
   def getUnit(name:String) : bwapi.Unit = {
-    return With.game.getUnit(name2ID(name))
+    if (name2ID.contains(name)) With.game.getUnit(name2ID(name))
+    else {
+      println("I don't know any units by the name: " + name)
+      throw new IllegalArgumentException("unknown name: " + name)
+    }
   }
 
   def getRegion(name:String) : bwta.Region = {
